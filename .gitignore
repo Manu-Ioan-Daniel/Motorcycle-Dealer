@@ -1,24 +1,31 @@
-# Compiled class file
+# ===== Java =====
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+target/
+build/
+.gradle/
 *.jar
 *.war
-*.nar
-*.ear
+
+# ===== Logs =====
+*.log
+hs_err_pid*
+replay_pid*
+
+# ===== Frontend (Node/React) =====
+node_modules/
+dist/
+dist-ssr/
+.env
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+
+# ===== OS =====
+.DS_Store
+
+# ===== Archives =====
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
