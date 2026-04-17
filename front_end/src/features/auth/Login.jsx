@@ -1,39 +1,40 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema } from "./schemas.js";
 import AuthCard from "../../components/AuthCard";
-import Header from "../../components/Header.jsx";
 import Footer from "../../components/Footer.jsx";
 import Input from "../../components/Input.jsx";
 import Button from "../../components/Button.jsx";
+import { loginRequest } from "../../api/auth";
+import {useState} from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/Navbar.jsx";
 
 export default function Login() {
-    const {
-        register,
-        handleSubmit,
-        formState: { errors , isSubmitting},
-    } = useForm({
-        resolver: zodResolver(loginSchema),
+    const {register, handleSubmit, formState: { isSubmitting}} = useForm({
         defaultValues: {
             email: "",
             password: "",
         },
     });
 
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
     const onSubmit = async (data) => {
         try {
-            console.log("VALID DATA:", data);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            // await loginRequest(data);
+            setError("")
+            const res = await loginRequest(data);
+            console.log(res.data);
+            navigate("/catalog")
+            // eslint-disable-next-line no-unused-vars
         } catch (err) {
-            console.error(err);
+            setError( "Invalid Email or Password")
         }
     };
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
-            <Header />
+            <Navbar/>
 
             <div className="flex flex-1 items-center justify-center">
                 <AuthCard
@@ -62,9 +63,7 @@ export default function Login() {
                                 placeholder="Enter your email"
                                 {...register("email")}
                             />
-                            <p className="text-red-500 text-sm mt-1 h-5">
-                                {errors.email?.message}
-                            </p>
+
                         </div>
 
                         <div>
@@ -75,7 +74,7 @@ export default function Login() {
                                 {...register("password")}
                             />
                             <p className="text-red-500 text-sm mt-1 h-5">
-                                {errors.password?.message}
+                                {error}
                             </p>
                         </div>
 

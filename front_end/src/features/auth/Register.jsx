@@ -5,10 +5,10 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { registerSchema } from "./schemas.js";
 import AuthCard from "../../components/AuthCard";
-import Header from "../../components/Header.jsx";
 import Footer from "../../components/Footer.jsx";
 import Input from "../../components/Input.jsx";
 import Button from "../../components/Button.jsx";
+import Navbar from "../../components/Navbar.jsx";
 
 
 
@@ -43,7 +43,7 @@ export default function Register() {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
-            <Header />
+            <Navbar/>
 
             <div className="flex flex-1 items-center justify-center mt-3">
                 <AuthCard
