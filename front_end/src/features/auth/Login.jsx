@@ -4,10 +4,12 @@ import AuthCard from "../../components/AuthCard";
 import Footer from "../../components/Footer.jsx";
 import Input from "../../components/Input.jsx";
 import Button from "../../components/Button.jsx";
-import { loginRequest } from "../../api/auth";
+import { loginRequest } from "./api/auth";
 import {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
+import {ERROR_MESSAGES} from "../../constants/errorMessages.js";
+import PopUp from "../../components/PopUp.jsx";
 
 export default function Login() {
     const {register, handleSubmit, formState: { isSubmitting}} = useForm({
@@ -19,16 +21,16 @@ export default function Login() {
 
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const [showPopup, setShowPopup] = useState(false);
 
     const onSubmit = async (data) => {
         try {
-            setError("")
-            const res = await loginRequest(data);
-            console.log(res.data);
-            navigate("/catalog")
-            // eslint-disable-next-line no-unused-vars
+            await loginRequest(data);
+            setShowPopup(true);
         } catch (err) {
-            setError( "Invalid Email or Password")
+            const errorCode = err.response?.data.code;
+            const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.default;
+            setError(message);
         }
     };
 
@@ -89,6 +91,7 @@ export default function Login() {
             </div>
 
             <Footer />
+            {showPopup && (<PopUp message="Login Successful!" onClose={()=>navigate("/catalog")} buttonText="Proceed"/>)}
         </div>
     );
 }

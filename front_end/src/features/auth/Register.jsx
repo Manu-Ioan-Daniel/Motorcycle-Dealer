@@ -9,8 +9,11 @@ import Footer from "../../components/Footer.jsx";
 import Input from "../../components/Input.jsx";
 import Button from "../../components/Button.jsx";
 import Navbar from "../../components/Navbar.jsx";
-
-
+import {registerRequest} from "./api/auth.js";
+import PopUp from "../../components/PopUp.jsx";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {ERROR_MESSAGES} from "../../constants/errorMessages.js";
 
 export default function Register() {
 
@@ -18,6 +21,7 @@ export default function Register() {
     const {
         register,
         control,
+        setError,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm({
@@ -26,20 +30,27 @@ export default function Register() {
             firstName: "",
             lastName: "",
             email: "",
+            username: "",
             phone: "",
             password: "",
         },
     });
 
+
+    const [showSuccess, setShowSuccess] = useState(false);
+    const navigate = useNavigate();
+
     const onSubmit = async (data) => {
         try {
-            console.log("REGISTER DATA:", data);
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            // await registerRequest(data);
+            await registerRequest(data);
+            setShowSuccess(true);
         } catch (err) {
-            console.error(err);
+            const errorCode = err.response?.data.code;
+            const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.default;
+            setError("email", {message: message});
         }
     };
+
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-50">
@@ -90,6 +101,17 @@ export default function Register() {
                         </div>
 
                         <div>
+                            <Input label="Username"
+                                   type="text"
+                                   placeholder = "johndoe123"
+                                   {...register("username")}
+                            />
+                            <p className="text-red-500 text-sm mt-1 h-5">
+                                {errors.username?.message}
+                            </p>
+                        </div>
+
+                        <div>
                             <Input
                                 label="Email"
                                 type="email"
@@ -114,7 +136,6 @@ export default function Register() {
                                         {...field}
                                         defaultCountry={"RO"}
                                         international
-                                        value={field.value ?? ""}
                                         onChange={(value) => field.onChange(value ?? "")}
                                         countryCallingCodeEditable={false}
                                         className="w-full border rounded-lg px-3 py-2"
@@ -147,6 +168,13 @@ export default function Register() {
             </div>
 
             <Footer />
+            {showSuccess && (
+                <PopUp
+                    message="Registration successful!"
+                    onClose={() => navigate("/login")}
+                    buttonText="OK"
+                />
+            )}
         </div>
     );
 }

@@ -9,6 +9,8 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 public class UserAccount extends BaseEntity {
 
     @Column(nullable = false, unique = true)
