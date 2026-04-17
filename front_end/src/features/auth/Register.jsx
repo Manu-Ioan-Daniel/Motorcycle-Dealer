@@ -1,18 +1,16 @@
-import { Link } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+// react
+import {useState} from "react";
+import {useForm, Controller} from "react-hook-form";
+import {Link, useNavigate} from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { registerSchema } from "./schemas.js";
-import AuthCard from "../../components/AuthCard";
-import Footer from "../../components/Footer.jsx";
-import Input from "../../components/Input.jsx";
-import Button from "../../components/Button.jsx";
-import Navbar from "../../components/Navbar.jsx";
+// ui comp
+import {Input, Button, Navbar, Footer, AuthCard, PopUp,} from "../../components";
+// api
 import {registerRequest} from "./api/auth.js";
-import PopUp from "../../components/PopUp.jsx";
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+//zod
+import {zodResolver} from "@hookform/resolvers/zod";
+import {registerSchema} from "./schemas.js";
 import {ERROR_MESSAGES} from "../../constants/errorMessages.js";
 
 export default function Register() {
@@ -23,7 +21,7 @@ export default function Register() {
         control,
         setError,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        formState: {errors, isSubmitting},
     } = useForm({
         resolver: zodResolver(registerSchema),
         defaultValues: {
@@ -47,7 +45,9 @@ export default function Register() {
         } catch (err) {
             const errorCode = err.response?.data.code;
             const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.default;
-            setError("email", {message: message});
+            if (errorCode === "EMAIL_EXISTS") {
+                setError("email", {message: message});
+            }
         }
     };
 
@@ -103,7 +103,7 @@ export default function Register() {
                         <div>
                             <Input label="Username"
                                    type="text"
-                                   placeholder = "johndoe123"
+                                   placeholder="johndoe123"
                                    {...register("username")}
                             />
                             <p className="text-red-500 text-sm mt-1 h-5">
@@ -131,7 +131,7 @@ export default function Register() {
                             <Controller
                                 name="phone"
                                 control={control}
-                                render={({ field }) => (
+                                render={({field}) => (
                                     <PhoneInput
                                         {...field}
                                         defaultCountry={"RO"}
@@ -167,7 +167,7 @@ export default function Register() {
                 </AuthCard>
             </div>
 
-            <Footer />
+            <Footer/>
             {showSuccess && (
                 <PopUp
                     message="Registration successful!"
