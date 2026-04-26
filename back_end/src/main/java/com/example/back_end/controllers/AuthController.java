@@ -2,7 +2,10 @@ package com.example.back_end.controllers;
 
 import com.example.back_end.dtos.LoginRequest;
 import com.example.back_end.dtos.RegisterRequest;
+import com.example.back_end.models.UserAccount;
 import com.example.back_end.services.UserService;
+import com.example.back_end.utils.JWTUtils;
+import jakarta.servlet.ServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,9 +25,10 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
+    private final JWTUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request, ServletRequest servletRequest) {
 
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -31,8 +37,13 @@ public class AuthController {
                 )
         );
 
-        return ResponseEntity.ok("Login successful for: " + auth.getName());
+        UserAccount user = userService.findByEmail(request.getEmail()).orElseThrow();
+        String token = jwtUtils.generateToken(user.getId());
 
+        return ResponseEntity.ok(Map.of(
+                "message", "Login successful",
+                "token", token
+        ));
     }
 
     @PostMapping("/register")

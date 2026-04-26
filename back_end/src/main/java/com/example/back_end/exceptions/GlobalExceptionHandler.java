@@ -1,5 +1,6 @@
 package com.example.back_end.exceptions;
 
+import com.example.back_end.enums.Errors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,13 +15,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleEmailExists(EmailAlreadyExistsException e) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(Map.of("code", "EMAIL_EXISTS"));
+                .body(Map.of("code", Errors.EMAIL_EXISTS.name()));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("code", "INVALID_CREDENTIALS"));
+                .body(Map.of("code", Errors.INVALID_CREDENTIALS.name()));
     }
 }

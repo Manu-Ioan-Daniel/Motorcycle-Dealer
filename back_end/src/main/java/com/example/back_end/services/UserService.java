@@ -3,16 +3,20 @@ package com.example.back_end.services;
 import com.example.back_end.dtos.RegisterRequest;
 import com.example.back_end.enums.Role;
 import com.example.back_end.models.User;
+import com.example.back_end.models.UserAccount;
+import com.example.back_end.repositories.UserAccountRepository;
 import com.example.back_end.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserAccountRepository userAccountRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void registerUser(RegisterRequest request) {
@@ -30,5 +34,9 @@ public class UserService {
         user.setRole(Role.USER);
 
         userRepository.save(user);
+    }
+
+    public Optional<UserAccount> findByEmail(String email) {
+        return userAccountRepository.findByEmail(email);
     }
 }
