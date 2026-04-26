@@ -3,12 +3,12 @@ import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {Link, useNavigate} from "react-router-dom";
 //ui comp
-import {Input, Button, Navbar, Footer, AuthCard} from "../../components";
+import {Input, Button, Navbar, Footer, AuthCard} from "../../shared/components";
 //api
 import {loginRequest} from "./api/auth";
 //zod
 import {zodResolver} from "@hookform/resolvers/zod";
-import {loginSchema} from "./schemas.js";
+import {loginSchema} from "./validation_schemas/loginSchema.js";
 import {ERROR_MESSAGES} from "../../constants/errorMessages.js";
 
 export default function Login() {

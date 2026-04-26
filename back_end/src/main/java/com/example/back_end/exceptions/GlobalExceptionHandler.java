@@ -18,6 +18,13 @@ public class GlobalExceptionHandler {
                 .body(Map.of("code", Errors.EMAIL_EXISTS.name()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<?> handlePhoneNumberExists(PhoneNumberAlreadyExistsException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of("code", Errors.PHONE_NUMBER_EXISTS.name()));
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
         return ResponseEntity

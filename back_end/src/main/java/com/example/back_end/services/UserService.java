@@ -2,6 +2,8 @@ package com.example.back_end.services;
 
 import com.example.back_end.dtos.RegisterRequest;
 import com.example.back_end.enums.Role;
+import com.example.back_end.exceptions.EmailAlreadyExistsException;
+import com.example.back_end.exceptions.PhoneNumberAlreadyExistsException;
 import com.example.back_end.models.User;
 import com.example.back_end.models.UserAccount;
 import com.example.back_end.repositories.UserAccountRepository;
@@ -21,9 +23,11 @@ public class UserService {
 
     public void registerUser(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            throw new EmailAlreadyExistsException();
         }
-
+        if(userRepository.existsByPhoneNumber(request.getPhoneNumber())){
+            throw new PhoneNumberAlreadyExistsException();
+        }
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());

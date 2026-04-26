@@ -5,12 +5,12 @@ import {Link, useNavigate} from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 // ui comp
-import {Input, Button, Navbar, Footer, AuthCard, PopUp,} from "../../components";
+import {Input, Button, Navbar, Footer, AuthCard, PopUp,} from "../../shared/components";
 // api
 import {registerRequest} from "./api/auth.js";
 //zod
 import {zodResolver} from "@hookform/resolvers/zod";
-import {registerSchema} from "./schemas.js";
+import {registerSchema} from "./validation_schemas/registerSchema.js";
 import {ERROR_MESSAGES} from "../../constants/errorMessages.js";
 
 export default function Register() {
@@ -43,10 +43,15 @@ export default function Register() {
             await registerRequest(data);
             setShowSuccess(true);
         } catch (err) {
+
             const errorCode = err.response?.data.code;
             const message = ERROR_MESSAGES[errorCode] ?? ERROR_MESSAGES.default;
+
             if (errorCode === "EMAIL_EXISTS") {
                 setError("email", {message: message});
+            }
+            if(errorCode === "PHONE_NUMBER_EXISTS"){
+                setError("phone", {message: message});
             }
         }
     };

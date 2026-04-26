@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -51,5 +52,15 @@ public class AuthController {
         userService.registerUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
 
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> me(@AuthenticationPrincipal org.springframework.security.oauth2.jwt.Jwt jwt) {
+
+        Long userId = Long.parseLong(jwt.getSubject());
+
+        return ResponseEntity.ok(Map.of(
+                "userId", userId
+        ));
     }
 }
