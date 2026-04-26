@@ -25,7 +25,9 @@ export default function Login() {
 
     const onSubmit = async (data) => {
         try {
-            await loginRequest(data);
+            const res = await loginRequest(data);
+            const token = res.data.token;
+            localStorage.setItem("token",token);
             navigate("/catalog");
         } catch (err) {
             const errorCode = err.response?.data.code;
