@@ -19,3 +19,5 @@ VALUES
     ( 'Ducati', 'Monster 821', 'Red', 9000, 10500, 'AVAILABLE', 3, 'NAKED', 2020),
 
     ( 'Ducati', 'Panigale V2', 'Red', 4000, 16500, 'AVAILABLE', 1, 'SPORT', 2023);
+
+

@@ -1,6 +1,7 @@
 package com.example.back_end.utils;
 
 import com.example.back_end.enums.Role;
+import com.example.back_end.models.User;
 import com.example.back_end.models.UserAccount;
 import com.example.back_end.repositories.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,24 +23,33 @@ public class DataSeeder implements CommandLineRunner {
         if(repo.count() > 0) {
             return;
         }
-        UserAccount user = new UserAccount(
-                "test@test.com",
-                "1234567890",
-                "testuser",
-                encoder.encode("password"),
-                Role.USER
-        );
 
-        UserAccount user2 = new UserAccount(
-                "test2@test.com",
-                "2234567890",
-                "testuser2",
-                encoder.encode("password2"),
-                Role.USER
-        );
+        User user = new User();
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setEmail("user@test.com");
+        user.setRole(Role.USER);
+        user.setPasswordHash(encoder.encode("password"));
+        user.setUsername("test");
+        user.setPhoneNumber("1234567890");
 
+        UserAccount adminAccount = new UserAccount();
+        adminAccount.setEmail("admin@test.com");
+        adminAccount.setUsername("admin");
+        adminAccount.setPasswordHash(encoder.encode("adminpassword"));
+        adminAccount.setRole(Role.ADMIN);
+        adminAccount.setPhoneNumber("1234567890");
+
+        UserAccount dealerAccount = new UserAccount();
+        dealerAccount.setEmail("dealer@test.com");
+        dealerAccount.setUsername("dealer");
+        dealerAccount.setPasswordHash(encoder.encode("dealerpassword"));
+        dealerAccount.setRole(Role.DEALER);
+        dealerAccount.setPhoneNumber("1234567890");
 
         repo.save(user);
-        repo.save(user2);
+        repo.save(adminAccount);
+        repo.save(dealerAccount);
+
     }
 }
