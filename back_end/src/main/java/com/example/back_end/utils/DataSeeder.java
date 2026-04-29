@@ -38,14 +38,14 @@ public class DataSeeder implements CommandLineRunner {
         adminAccount.setUsername("admin");
         adminAccount.setPasswordHash(encoder.encode("adminpassword"));
         adminAccount.setRole(Role.ADMIN);
-        adminAccount.setPhoneNumber("1234567890");
+        adminAccount.setPhoneNumber("2234567890");
 
         UserAccount dealerAccount = new UserAccount();
         dealerAccount.setEmail("dealer@test.com");
         dealerAccount.setUsername("dealer");
         dealerAccount.setPasswordHash(encoder.encode("dealerpassword"));
         dealerAccount.setRole(Role.DEALER);
-        dealerAccount.setPhoneNumber("1234567890");
+        dealerAccount.setPhoneNumber("3234567890");
 
         repo.save(user);
         repo.save(adminAccount);
