@@ -6,7 +6,6 @@ export default function SearchBar() {
     const navigate = useNavigate();
 
     const handleSearch = () => {
-        if (!value.trim()) return;
 
         navigate(`/catalog?search=${encodeURIComponent(value)}`);
     };
