@@ -1,3 +1,3 @@
 import API from "./axios.js";
 
-export const getMeRequest = () => API.get("/auth/me");
+export const getMeRequest = () => API.get("/auth/me").then(res => res.data);

@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import MotorcycleCard from "./MotorcycleCard.jsx";
 import FilterSidebar from "./FilterSidebar.jsx";
 import SortBar from "./SortBar.jsx";
@@ -10,6 +10,7 @@ import { fetchBikes } from "../api/bikes.js";
 export default function MotorcycleList() {
     const [bikes, setBikes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     const [searchParams] = useSearchParams();
     const searchQuery = searchParams.get("search") ?? "";
@@ -48,7 +49,7 @@ export default function MotorcycleList() {
     }, [bikes, filters, sort, searchQuery]);
 
     const handleDetails = (bike) => {
-        console.log("Selected bike:", bike);
+        navigate(`/catalog/${bike.id}`);
     };
 
     if (loading) {

@@ -17,3 +17,8 @@ export async function isLoggedIn() {
         return false;
     }
 }
+
+export function logout() {
+    localStorage.removeItem("token");
+}
+

@@ -2,6 +2,7 @@ package com.example.back_end.controllers;
 
 import com.example.back_end.dtos.LoginRequest;
 import com.example.back_end.dtos.RegisterRequest;
+import com.example.back_end.enums.Role;
 import com.example.back_end.models.UserAccount;
 import com.example.back_end.services.UserService;
 import com.example.back_end.utils.JWTUtils;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
@@ -54,12 +56,13 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> me(@AuthenticationPrincipal org.springframework.security.oauth2.jwt.Jwt jwt) {
+    public ResponseEntity<?> me(@AuthenticationPrincipal Jwt jwt) {
 
         Long userId = Long.parseLong(jwt.getSubject());
-
+        Role role = userService.findById(userId).orElseThrow().getRole();
         return ResponseEntity.ok(Map.of(
-                "userId", userId
+                "userId", userId,
+                "role", role
         ));
     }
 }
