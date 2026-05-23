@@ -1,6 +1,7 @@
 package com.example.back_end.models;
 
 import com.example.back_end.enums.Role;
+import com.example.back_end.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +28,7 @@ public class UserAccount extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }

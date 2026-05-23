@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/motorcycle")
@@ -68,9 +69,17 @@ public class MotorcyclePageController {
     }
 
     @PostMapping("/listings")
-    public ResponseEntity<?> addListing(@RequestBody @Valid MotorcycleListing listing) {
-        motorcycleListingService.addListing(listing);
-        return ResponseEntity.ok("Listing created successfully");
+    public ResponseEntity<Map<String, Long>> addListing(@RequestBody @Valid MotorcycleListing listing) {
+        Long listingId = motorcycleListingService.addListing(listing);
+        return ResponseEntity.ok(Map.of("id", listingId));
+    }
+
+    @PutMapping("/listings/{listingId}")
+    public ResponseEntity<?> updateListing(@PathVariable Long listingId , @RequestBody @Valid MotorcycleListing listing) {
+        listing.setId(listingId);
+        motorcycleListingService.updateListing(listing);
+        return ResponseEntity.noContent().build();
+
     }
 
 }

@@ -58,12 +58,12 @@ export default function Navbar() {
                         {role === "DEALER" && (
                             <>
                                 <NavLink
-                                    to="/add-listing"
+                                    to="/my-listings"
                                     className={({ isActive }) =>
                                         isActive ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"
                                     }
                                 >
-                                    Add Listing
+                                    My Listings
                                 </NavLink>
 
                                 <NavLink

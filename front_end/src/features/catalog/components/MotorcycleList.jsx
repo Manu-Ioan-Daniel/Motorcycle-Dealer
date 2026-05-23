@@ -31,6 +31,8 @@ export default function MotorcycleList() {
         };
 
         loadBikes();
+        const interval = setInterval(loadBikes, 1000);
+        return () => clearInterval(interval);
     }, []);
 
     const options = useMemo(() => deriveOptions(bikes), [bikes]);

@@ -19,7 +19,7 @@ public class Dealer extends UserAccount{
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name="dealer_status")
     @Enumerated(EnumType.STRING)
-    private DealerStatus status;
+    private DealerStatus dealerStatus;
 }

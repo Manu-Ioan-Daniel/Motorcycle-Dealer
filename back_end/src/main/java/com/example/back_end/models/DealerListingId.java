@@ -3,32 +3,35 @@ package com.example.back_end.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserWishlistId implements Serializable {
+public class DealerListingId implements Serializable {
 
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "dealer_id")
+    private Long dealerId;
 
     @Column(name = "motorcycle_listing_id")
-    private Long motorcycleId;
+    private Long motorcycleListingId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserWishlistId that)) return false;
-        return Objects.equals(userId, that.userId) &&
-                Objects.equals(motorcycleId, that.motorcycleId);
+        if (!(o instanceof DealerListingId that)) return false;
+        return Objects.equals(dealerId, that.dealerId) &&
+                Objects.equals(motorcycleListingId, that.motorcycleListingId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, motorcycleId);
+        return Objects.hash(dealerId, motorcycleListingId);
     }
 }
+

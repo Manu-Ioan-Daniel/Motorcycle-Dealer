@@ -2,7 +2,7 @@ package com.example.back_end.controllers;
 
 import com.example.back_end.dtos.LoginRequest;
 import com.example.back_end.dtos.RegisterRequest;
-import com.example.back_end.enums.Role;
+import com.example.back_end.enums.Status;
 import com.example.back_end.models.UserAccount;
 import com.example.back_end.services.UserService;
 import com.example.back_end.utils.JWTUtils;
@@ -18,7 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
-
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,6 +39,13 @@ public class AuthController {
         );
 
         UserAccount user = userService.findByEmail(request.getEmail()).orElseThrow();
+
+        if(user.getStatus().equals(Status.SUSPENDED)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                    "message", "Your account is suspended. Please contact support for more information."
+            ));
+        }
+
         String token = jwtUtils.generateToken(user.getId());
 
         return ResponseEntity.ok(Map.of(
@@ -59,10 +65,11 @@ public class AuthController {
     public ResponseEntity<?> me(@AuthenticationPrincipal Jwt jwt) {
 
         Long userId = Long.parseLong(jwt.getSubject());
-        Role role = userService.findById(userId).orElseThrow().getRole();
+        UserAccount account = userService.findById(userId).orElseThrow();
         return ResponseEntity.ok(Map.of(
                 "userId", userId,
-                "role", role
+                "role", account.getRole(),
+                "status", account.getStatus()
         ));
     }
 }

@@ -9,6 +9,9 @@ import PurchaseInquiryDetails from "./features/catalog/components/PurchaseInquir
 import ProtectedRoute from "./shared/components/ProtectedRoute.jsx";
 import Profile from "./features/auth/Profile.jsx";
 import AddListing from "./features/catalog/AddListing.jsx";
+import MyListings from "./features/catalog/MyListings.jsx";
+import EditListing from "./features/catalog/EditListing.jsx";
+import ScheduleTestRide from "./features/catalog/ScheduleTestRide.jsx";
 
 function App() {
     return (
@@ -68,6 +71,29 @@ function App() {
                         </ProtectedRoute>
                     }
                 />
+                <Route
+                    path="/edit-listing"
+                    element={
+                        <ProtectedRoute>
+                            <EditListing />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/my-listings"
+                    element={
+                        <ProtectedRoute>
+                            <MyListings />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route path="/catalog/:bikeId/test-ride" element={
+                    <ProtectedRoute>
+                        <ScheduleTestRide />
+                    </ProtectedRoute>
+                }/>
+
             </Routes>
         </BrowserRouter>
     );

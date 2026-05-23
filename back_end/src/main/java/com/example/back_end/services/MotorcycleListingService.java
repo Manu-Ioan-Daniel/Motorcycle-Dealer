@@ -2,6 +2,7 @@ package com.example.back_end.services;
 
 import com.example.back_end.models.MotorcycleListing;
 import com.example.back_end.repositories.MotorcycleListingRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,12 @@ public class MotorcycleListingService {
         return motorcycleListingRepository.findById(id);
     }
 
-    public void addListing(MotorcycleListing motorcycleListing) {
-        motorcycleListingRepository.save(motorcycleListing);
+    public Long addListing(MotorcycleListing motorcycleListing) {
+        MotorcycleListing savedListing = motorcycleListingRepository.save(motorcycleListing);
+        return savedListing.getId();
+    }
+
+    public void updateListing(MotorcycleListing listing) {
+        motorcycleListingRepository.save(listing);
     }
 }

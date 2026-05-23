@@ -195,6 +195,14 @@ export default function MotorcycleDetails() {
                                     >
                                         {wishlisted ? "Remove from wishlist" : " Add to wishlist"}
                                     </button>
+                                    
+                                    <button
+                                        type="button"
+                                        onClick={() => navigate(`/catalog/${bikeId}/test-ride`)}
+                                        className="inline-flex items-center justify-center rounded-lg bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700 sm:col-span-2"
+                                    >
+                                        Schedule Test Ride
+                                    </button>
                                 </div>
                             </div>
                         </div>

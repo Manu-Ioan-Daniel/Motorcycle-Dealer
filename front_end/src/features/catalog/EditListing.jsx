@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import { Header, Footer } from "../../shared/components/index.js";
 import { getMeRequest } from "../../shared/api/user.js";
-import { submitListing, updateListing, uploadBikeImage } from "./api/bikes.js";
+import { updateListing, uploadBikeImage } from "./api/bikes.js";
 
-export default function AddListing() {
+export default function EditListing() {
     const navigate = useNavigate();
-    const location = useLocation();
+    const { state } = useLocation();
+    const listing = state?.listing;
+    const id = listing?.id?.motorcycleListingId;
     const [loading, setLoading] = useState(true);
     const [isDealer, setIsDealer] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
     const [suggestedFilename, setSuggestedFilename] = useState("");
     const [imageFile, setImageFile] = useState(null);
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [editingListingId, setEditingListingId] = useState(null);
 
     const [formData, setFormData] = useState({
         brand: "",
@@ -29,31 +29,32 @@ export default function AddListing() {
     });
 
     useEffect(() => {
-        const checkAuth = async () => {
+        const init = async () => {
             try {
                 const userData = await getMeRequest();
-                if (userData?.role === "DEALER") {
+                const meData = userData?.data ?? userData;
+                if (meData?.role === "DEALER") {
                     setIsDealer(true);
                 }
-                setLoading(false);
+
+                if (listing) {
+                    setFormData(listing);
+                    if (listing.brand && listing.model) {
+                        setSuggestedFilename(
+                            `${listing.brand.toLowerCase()}_${listing.model.toLowerCase()}.jpeg`.replace(/\s+/g, "_")
+                        );
+                    }
+                }
             } catch (error) {
-                console.error("Failed to check auth:", error);
+                console.error("Failed to load listing:", error);
+                window.alert("Failed to load listing details");
+            } finally {
                 setLoading(false);
             }
         };
 
-        checkAuth();
-        // If navigated here for editing, prefill form
-        const incoming = location.state?.listing;
-        if (incoming) {
-            setIsEditMode(true);
-            setEditingListingId(incoming.id?.motorcycleListingId ?? incoming.motorcycleListingId ?? incoming.id);
-            setFormData((prev) => ({ ...prev, ...incoming }));
-            if (incoming.brand && incoming.model && incoming.year) {
-                setSuggestedFilename(`${incoming.brand.toLowerCase()}_${incoming.model.toLowerCase()} ${incoming.year}.jpeg`.replace(/\s+/g, " "));
-            }
-        }
-    }, [location]);
+        init();
+    }, [id, listing]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -91,32 +92,22 @@ export default function AddListing() {
 
         try {
             const listingPayload = {
-                ...formData,
-                imageFilename: suggestedFilename,
+                brand: formData.brand,
+                model: formData.model,
+                year: formData.year,
+                price: formData.price,
+                mileage: formData.mileage,
+                color: formData.color,
+                type: formData.type,
+                stockQty: formData.stockQty,
+                status: formData.status,
             };
-
-            let dealerId = null;
-            try {
-                const me = await getMeRequest();
-                const meData = me?.data ?? me;
-                dealerId = meData?.userId ?? meData?.id ?? meData?.user?.id ?? null;
-                console.log("AddListing: extracted dealerId:", dealerId, "from:", meData);
-            } catch (err) {
-                console.warn("Could not determine dealer id:", err);
-            }
-
-            let created;
-            if (isEditMode && editingListingId) {
-                // Update existing listing
-                created = await updateListing(editingListingId, listingPayload);
-            } else {
-                // Create new listing
-                created = await submitListing(listingPayload, dealerId);
-            }
+            console.log(listingPayload);
+            await updateListing(id, listingPayload);
 
             if (imageFile && suggestedFilename) {
                 try {
-                    await uploadBikeImage(imageFile, suggestedFilename, created?.id ?? editingListingId ?? null);
+                    await uploadBikeImage(imageFile, suggestedFilename, id);
                 } catch (imgErr) {
                     console.warn("Image upload failed:", imgErr);
                 }
@@ -124,7 +115,7 @@ export default function AddListing() {
 
             navigate("/my-listings");
         } catch (error) {
-            console.error("Failed to submit listing:", error);
+            console.error("Failed to update listing:", error);
             const msg = error?.response?.data?.message ?? "Failed to save listing. Please try again.";
             window.alert(msg);
         } finally {
@@ -150,7 +141,7 @@ export default function AddListing() {
                 <Header />
                 <main className="flex-1 p-6">
                     <div className="max-w-4xl mx-auto bg-white border border-gray-200 rounded-2xl p-8 text-center">
-                        <p className="text-gray-600">Only dealers can add listings.</p>
+                        <p className="text-gray-600">Only dealers can edit listings.</p>
                     </div>
                 </main>
                 <Footer />
@@ -165,12 +156,8 @@ export default function AddListing() {
             <main className="flex-1 p-6">
                 <div className="max-w-4xl mx-auto">
                     <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-900">
-                            {isEditMode ? "Edit Motorcycle Listing" : "Add New Motorcycle Listing"}
-                        </h1>
-                        <p className="text-gray-600 mt-2">
-                            {isEditMode ? "Update the listing details" : "Fill in the details and upload a photo"}
-                        </p>
+                        <h1 className="text-3xl font-bold text-gray-900">Edit Motorcycle Listing</h1>
+                        <p className="text-gray-600 mt-2">Update the listing details</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
@@ -191,7 +178,6 @@ export default function AddListing() {
                                 />
                             </div>
 
-                            {/* Model */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Model *
@@ -207,7 +193,6 @@ export default function AddListing() {
                                 />
                             </div>
 
-                            {/* Year */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Year *
@@ -222,7 +207,6 @@ export default function AddListing() {
                                 />
                             </div>
 
-                            {/* Price */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Price (€) *
@@ -238,7 +222,6 @@ export default function AddListing() {
                                 />
                             </div>
 
-                            {/* Mileage */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Mileage (km) *
@@ -254,7 +237,6 @@ export default function AddListing() {
                                 />
                             </div>
 
-                            {/* Color */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Color *
@@ -270,7 +252,6 @@ export default function AddListing() {
                                 />
                             </div>
 
-                            {/* Type */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     Type *
@@ -304,7 +285,6 @@ export default function AddListing() {
                                 />
                             </div>
 
-                            {/* Status */}
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                                     STATUS *
@@ -321,16 +301,14 @@ export default function AddListing() {
                             </div>
                         </div>
 
-                        {/* Image Upload */}
                         <div className="mt-8 p-6 border-2 border-dashed border-gray-300 rounded-lg">
                             <label className="block text-sm font-semibold text-gray-700 mb-4">
-                                Upload Motorcycle Photo {!isEditMode && "*"}
+                                Upload Motorcycle Photo (optional)
                             </label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                required={!isEditMode}
                                 className="block w-full"
                             />
                             {suggestedFilename && (
@@ -350,14 +328,13 @@ export default function AddListing() {
                             )}
                         </div>
 
-                        {/* Submit */}
                         <div className="mt-8 flex gap-4">
                             <button
                                 type="submit"
                                 disabled={submitting}
                                 className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
                             >
-                                {submitting ? (isEditMode ? "Saving..." : "Creating Listing...") : (isEditMode ? "Save Changes" : "Create Listing")}
+                                {submitting ? "Saving..." : "Save Changes"}
                             </button>
                             <button
                                 type="button"
