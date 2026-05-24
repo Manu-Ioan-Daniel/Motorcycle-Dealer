@@ -18,7 +18,7 @@ export default function MotorcycleDetails() {
         const loadData = async () => {
             try {
                 const userRes = await getMeRequest();
-                const currentUserId = userRes.data?.userId;
+                const currentUserId = userRes.userId;
                 setUserId(currentUserId);
 
                 const bikes = await fetchBikes();
@@ -51,6 +51,7 @@ export default function MotorcycleDetails() {
     };
 
     const handleWishlist = async () => {
+        console.log(bike, userId)
         if (!bike || !userId) return;
 
         setWishlistLoading(true);

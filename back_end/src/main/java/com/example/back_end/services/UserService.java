@@ -2,6 +2,7 @@ package com.example.back_end.services;
 
 import com.example.back_end.dtos.RegisterRequest;
 import com.example.back_end.enums.Role;
+import com.example.back_end.enums.Status;
 import com.example.back_end.exceptions.EmailAlreadyExistsException;
 import com.example.back_end.exceptions.PhoneNumberAlreadyExistsException;
 import com.example.back_end.models.User;
@@ -11,6 +12,8 @@ import com.example.back_end.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,5 +49,21 @@ public class UserService {
 
     public Optional<UserAccount> findById(Long id) {
         return userAccountRepository.findById(id);
+    }
+
+    public List<UserAccount> findAll() {
+        return userAccountRepository.findAll();
+    }
+
+    public void suspendUser(Long userId) {
+        UserAccount user = userAccountRepository.findById(userId).orElseThrow();
+        user.setStatus(Status.SUSPENDED);
+        userAccountRepository.save(user);
+    }
+
+    public void activateUser(Long userId) {
+        UserAccount user = userAccountRepository.findById(userId).orElseThrow();
+        user.setStatus(Status.ACTIVE);
+        userAccountRepository.save(user);
     }
 }

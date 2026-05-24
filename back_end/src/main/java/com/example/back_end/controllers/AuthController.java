@@ -29,7 +29,7 @@ public class AuthController {
     private final JWTUtils jwtUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request, ServletRequest servletRequest) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
 
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

@@ -31,7 +31,6 @@ export default function Navbar() {
             <h1 className="text-xl font-bold text-gray-800">MotoShop</h1>
 
             <div className="flex items-center gap-6">
-                {/* Guest: Login */}
                 {!loggedIn && (
                     <NavLink
                         to="/login"
@@ -43,7 +42,6 @@ export default function Navbar() {
                     </NavLink>
                 )}
 
-                {/* Logged in: all items on right */}
                 {loggedIn && (
                     <>
                         <NavLink
@@ -54,6 +52,38 @@ export default function Navbar() {
                         >
                             Catalog
                         </NavLink>
+                        {role === "USER" && (
+                        <NavLink
+                            to="/dealer-app"
+                            className={({ isActive }) =>
+                                isActive ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"
+                            }
+                        >
+                            Apply for Dealer
+                        </NavLink>
+                        )}
+
+                        {role === "ADMIN" &&(
+                            <NavLink
+                                to = "/manage-dealer-app"
+                                className={({ isActive }) =>
+                                    isActive ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"
+                                }
+                            >
+                                Manage Dealer Applications
+                            </NavLink>
+                        )}
+
+                        {role === "ADMIN" &&(
+                            <NavLink
+                                to = "/manage-users"
+                                className={({ isActive }) =>
+                                    isActive ? "text-blue-600 font-semibold" : "text-gray-600 hover:text-blue-600"
+                                }
+                            >
+                                Manage Users
+                            </NavLink>
+                        )}
 
                         {role === "DEALER" && (
                             <>
@@ -74,6 +104,7 @@ export default function Navbar() {
                                 >
                                     Manage Inquiries
                                 </NavLink>
+
                             </>
                         )}
 

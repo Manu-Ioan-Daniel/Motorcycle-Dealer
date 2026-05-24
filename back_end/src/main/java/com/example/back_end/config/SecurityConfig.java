@@ -29,11 +29,11 @@ public class SecurityConfig {
                 .cors(cors -> {
         })
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/catalog/**").authenticated()
-                .requestMatchers("/api/motorcycle/**").authenticated()
-                .anyRequest().authenticated()
-        )
+                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/api/catalog/**").authenticated()
+                        .requestMatchers("/api/motorcycle/**").authenticated()
+                        .anyRequest().authenticated()
+                )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }

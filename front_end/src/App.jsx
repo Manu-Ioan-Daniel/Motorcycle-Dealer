@@ -12,6 +12,9 @@ import AddListing from "./features/catalog/AddListing.jsx";
 import MyListings from "./features/catalog/MyListings.jsx";
 import EditListing from "./features/catalog/EditListing.jsx";
 import ScheduleTestRide from "./features/catalog/ScheduleTestRide.jsx";
+import DealerApplication from "./features/dealer-application/DealerApplication.jsx";
+import ManageDealerApplications from "./features/dealer-application/ManageDealerApplications.jsx";
+import ManageUsers from "./features/catalog/users/ManageUsers.jsx";
 
 function App() {
     return (
@@ -44,6 +47,22 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <ManagePurchaseInquiries />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/manage-dealer-app"
+                    element={
+                        <ProtectedRoute>
+                            <ManageDealerApplications />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/dealer-app"
+                    element={
+                        <ProtectedRoute>
+                            <DealerApplication />
                         </ProtectedRoute>
                     }
                 />
@@ -93,6 +112,15 @@ function App() {
                         <ScheduleTestRide />
                     </ProtectedRoute>
                 }/>
+
+                <Route
+                    path="/manage-users"
+                    element={
+                        <ProtectedRoute>
+                            <ManageUsers />
+                        </ProtectedRoute>
+                    }
+                />
 
             </Routes>
         </BrowserRouter>

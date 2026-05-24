@@ -16,7 +16,6 @@ export default function ManagePurchaseInquiries() {
                 const list = Array.isArray(data) ? data : [];
                 setInquiries(list);
 
-                // Fetch motorcycle details for each inquiry that has a listing id
                 const ids = Array.from(
                     new Set(
                         list
@@ -53,6 +52,8 @@ export default function ManagePurchaseInquiries() {
         };
 
         loadInquiries();
+        const interval = setInterval(loadInquiries, 1000);
+        return () => clearInterval(interval);
     }, []);
 
     return (
